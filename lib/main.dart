@@ -1,7 +1,11 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:aula04_statefull/dtos/cantor_dto.dart';
 import 'package:aula04_statefull/repository/cantor_dao.dart';
+
 import 'package:flutter/material.dart';
 
+import 'pages/cantor_listagem.dart';
 import 'repository/conexao.dart';
 
 // void main() => runApp(const MyApp());
@@ -18,9 +22,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'SetList Marinke',
-      home: FormularioValores(),
+      // home: FormularioValores(),
+      initialRoute: '/',
+      routes: {
+        '/': (_) => const FormularioValores(),
+        '/cantorListagem': (context) => const CantorListagem(),
+      },
     );
   }
 }
@@ -34,6 +44,12 @@ class FormularioValores extends StatefulWidget {
 
 class _FormularioValoresState extends State<FormularioValores> {
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // checkLoginAndRedirect();
+  }
 
   late CantorDTO cantorDTO;
 
@@ -53,6 +69,7 @@ class _FormularioValoresState extends State<FormularioValores> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.greenAccent,
         title: const Text('SetList Marinke'),
       ),
       body: Form(
@@ -102,15 +119,8 @@ class _FormularioValoresState extends State<FormularioValores> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    CantorDAO dao = CantorDAO();
-                    Future<CantorDTO?> ultimoCantor = dao.obterUltimo();
-                    CantorDTO? cantor = await ultimoCantor;
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          backgroundColor: Colors.lightBlue,
-                          content: Text(cantor.toString())),
-                    );
+                    // Navigator.of(context).pushNamed('/edit', arguments: client);
+                    Navigator.of(context).pushNamed('/cantorListagem');
                   },
                   child: const Text("Ver listagem completa"),
                 )
