@@ -83,19 +83,38 @@ class _FormularioValoresState extends State<FormularioValores> {
               controller: myControllerNr2,
               validator: (value) => cantorDTO.musicaValidate(value!),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                CantorDAO dao = CantorDAO();
-                Future<CantorDTO?> ultimoCantor = dao.obterUltimo();
-                CantorDTO? cantor = await ultimoCantor;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    CantorDAO dao = CantorDAO();
+                    Future<CantorDTO?> ultimoCantor = dao.obterUltimo();
+                    CantorDTO? cantor = await ultimoCantor;
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      backgroundColor: Colors.lightBlue,
-                      content: Text(cantor.toString())),
-                );
-              },
-              child: const Text("Último inserido"),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          backgroundColor: Colors.lightBlue,
+                          content: Text(cantor.toString())),
+                    );
+                  },
+                  child: const Text("Último inserido"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    CantorDAO dao = CantorDAO();
+                    Future<CantorDTO?> ultimoCantor = dao.obterUltimo();
+                    CantorDTO? cantor = await ultimoCantor;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          backgroundColor: Colors.lightBlue,
+                          content: Text(cantor.toString())),
+                    );
+                  },
+                  child: const Text("Ver listagem completa"),
+                )
+              ],
             ),
           ],
         ),
