@@ -8,40 +8,33 @@ class CantorListagem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<List<CantorDTO>> lista = listarCantores();
+    Future<List<CantorDTO>> listaCantoresDTO = listarCantores();
 
-    // List<ItensLista> listaTeste = [
-    //   [const ItensLista('CPM22', 'Canta: outra música')],
-    //   [
-    //     const ItensLista('CPM22', 'Canta: outra música'),
-    //   ],
-    //   [const ItensLista('Pitty e Emicida', 'Cantam: Hoje Cedo')]
-    // ];
+    List<ItensLista> listaItensLista = List.empty(growable: true);
+    listaItensLista
+        .add(const ItensLista("Alceu Valença e Zé Ramalho", "Coração Bobo"));
 
-    lista.then((cantores) {
+    listaCantoresDTO.then((cantores) {
       for (var cantor in cantores) {
         print(
             'ID: ${cantor.id}, Nome: ${cantor.nome}, Música: ${cantor.musica}');
+        ItensLista newItem = ItensLista(cantor.nome, cantor.musica);
+        listaItensLista.add(newItem);
       }
     }).catchError((error) {
-      // Handle any errors that occur during the retrieval process
       print('Error fetching cantores: $error');
     });
 
-    print(lista);
     return Scaffold(
-      body: const Column(
+      body: Column(
         children: [
-          // ListView.builder(
-          //   shrinkWrap: true,
-          //   itemCount: listaTeste.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return listaTeste[index];
-          //   },
-          // ),
-          ItensLista('Alceu Valença e Zé Ramalho', 'Cantam: Coração Bobo'),
-          ItensLista('CPM22', 'Canta: outra música'),
-          ItensLista('Pitty e Emicida', 'Cantam: Hoje Cedo'),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: listaItensLista.length,
+            itemBuilder: (BuildContext context, int index) {
+              return listaItensLista[index];
+            },
+          ),
         ],
       ),
       appBar: AppBar(
@@ -57,7 +50,7 @@ class CantorListagem extends StatelessWidget {
 
   Future<List<CantorDTO>> listarCantores() async {
     CantorDAO dao = CantorDAO();
-    Future<List<CantorDTO>> cantores = dao.selectAll();
-    return await cantores;
+    List<CantorDTO> cantores = await dao.selectAll();
+    return cantores;
   }
 }
