@@ -3,43 +3,52 @@ import 'package:aula04_statefull/repository/cantor_dao.dart';
 import 'package:aula04_statefull/widget/itens_lista.dart';
 import 'package:flutter/material.dart';
 
-class CantorListagem extends StatelessWidget {
+class CantorListagem extends StatefulWidget {
   const CantorListagem({super.key});
 
   @override
+  State<StatefulWidget> createState() => _CantorListagemState();
+}
+
+class _CantorListagemState extends State<CantorListagem> {
+  late Future<List<CantorDTO>> _listaCantoresDTO;
+
+  @override
+  void initState() {
+    super.initState();
+    _listaCantoresDTO = listarCantores();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Future<List<CantorDTO>> listaCantoresDTO = listarCantores();
-
-    List<ItensLista> listaItensLista = List.empty(growable: true);
-    listaItensLista
-        .add(const ItensLista("Alceu Valença e Zé Ramalho", "Coração Bobo"));
-
-    listaCantoresDTO.then((cantores) {
-      for (var cantor in cantores) {
-        print(
-            'ID: ${cantor.id}, Nome: ${cantor.nome}, Música: ${cantor.musica}');
-        ItensLista newItem = ItensLista(cantor.nome, cantor.musica);
-        listaItensLista.add(newItem);
-      }
-    }).catchError((error) {
-      print('Error fetching cantores: $error');
-    });
-
     return Scaffold(
-      body: Column(
-        children: [
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: listaItensLista.length,
-            itemBuilder: (BuildContext context, int index) {
-              return listaItensLista[index];
-            },
-          ),
-        ],
-      ),
       appBar: AppBar(
         title: const Text("LineUp John Rock bb"),
         backgroundColor: Colors.greenAccent,
+      ),
+      body: FutureBuilder<List<CantorDTO>>(
+        future: _listaCantoresDTO,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            List<CantorDTO> cantores = snapshot.data!;
+            List<ItensLista> listaItensLista = cantores.map((cantor) {
+              return ItensLista(cantor.nome, cantor.musica);
+            }).toList();
+
+            return ListView.builder(
+              itemCount: listaItensLista.length,
+              itemBuilder: (BuildContext context, int index) {
+                return listaItensLista[index];
+              },
+            );
+          } else {
+            return const Center(child: Text('Não há dados cadastrados.'));
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => (),
