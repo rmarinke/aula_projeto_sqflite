@@ -1,3 +1,4 @@
-# aula04_statefull
+# aula_projeto_sqflite
 
-A new Flutter project.
+This project should be used as a starting point for developing the semester's assignment.
+
